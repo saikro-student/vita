@@ -26,3 +26,13 @@
 *.exe
 *.out
 *.app
+
+# Emacs's temporary files
+*~
+
+# Ignore all files in the out/ directory
+out/
+
+# CMake downloads all third parties.
+# So they shouldn't be tracked.
+impl/third_party/

@@ -4,8 +4,10 @@
 
 namespace vita
 {
-  namespace impl
-  {
+namespace exercise_4_1__3
+{
+namespace impl
+{
     /*
     // Excercise 4.1-1
     It returns subarray where our losses are minimal.
@@ -51,17 +53,18 @@ namespace vita
       
       for(; first != last; ++first)
       {
-	ValueType sum = 0;
-	for(auto other = first; other != last; ++other)
-	{
-	  sum += *other;
-	  if(sum > max)
+	      ValueType sum = 0;
+	      for(auto other = first; other != last; ++other)
+	      {
+	        sum += *other;
+	        if(sum > max)
           {
-	    max = sum;
-	    left = first;
-	    right = other;
-	  }
-	}
+	          max = sum;
+	          left = first;
+            right = other;
+            ++right;
+	        }
+	      }
       }
 
       return std::make_tuple(left, right, max);
@@ -146,5 +149,6 @@ namespace vita
 	return cross_result;
       return right_result;
     }
-  }  // namespce impl
+}  // namespce impl
+}  //  exercise_4_1__3
 }  // namespace vita
