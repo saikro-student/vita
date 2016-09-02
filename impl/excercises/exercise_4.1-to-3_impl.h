@@ -80,18 +80,20 @@ namespace impl
       using ValueType = std::iterator_traits<InputIterator>::value_type;
       auto left_max = std::numeric_limits<ValueType>::min();
       auto left = last;
-      
-      for(auto left_first = std::make_reverse_iterator(middle),
-          auto left_last  = std::make_reverse_iterator(first),
-	  ValueType sum = 0;
+
+      auto left_first = std::make_reverse_iterator(middle);
+      auto left_last  = std::make_reverse_iterator(first);      
+      for(ValueType sum = 0;
 	  left_first != left_last;
 	  ++left_first)
       {
 	sum += *left_first;
-	if(sum > left_max)
+	if(sum >= left_max)
 	{
 	  left_max = sum;
+	  
 	  left = left_first.base();
+	  --left; // to account the work with a reverse_iterator
 	}
       }
 
@@ -99,18 +101,19 @@ namespace impl
       auto right_max = std::numeric_limits<ValueType>::min();
       auto right = last;
       
-      ++middle;
       for(ValueType sum = 0; middle != last; ++middle)
       {
 	sum += *middle;
-	if(sum > right_max)
+	if(sum >= right_max)
 	{
 	  right_max = sum;
+
 	  right = middle;
+	  ++right; // to account c++ not closed ranged
 	}
       }
 
-      return (left, right, left_max + right_max);
+      return std::make_tuple(left, right, left_max + right_max);
     }
         
     template<typename InputIterator>
@@ -132,7 +135,7 @@ namespace impl
       }
 
       auto middle = first;
-      std::advance(first, size/2);
+      std::advance(middle, size/2);
       
       auto left_result  = find_max_subarray_recursively(first, middle);
       auto cross_result = find_max_crossing_subarray(first, last, middle);
@@ -141,7 +144,7 @@ namespace impl
       constexpr size_t MAX_SUM_IDX = 2;
       auto left_max  = std::get<MAX_SUM_IDX>(left_result);
       auto cross_max = std::get<MAX_SUM_IDX>(cross_result);
-      auto right_max = std::get<MAX_SUM_IDX>(rigth_result);
+      auto right_max = std::get<MAX_SUM_IDX>(right_result);
 
       if(left_max >= cross_max && left_max >= right_max)
 	return left_result;

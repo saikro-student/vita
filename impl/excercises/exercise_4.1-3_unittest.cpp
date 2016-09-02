@@ -62,5 +62,45 @@ TEST_F(Exercise_4_1__3Test, BruteForceVersion) {
   EXPECT_EQ(std::get<MAX_SUM_IDX>(book_set_result),
 	    BEST_RANGE_RESULT);  
 }
+
+
+TEST_F(Exercise_4_1__3Test, RecursiveVersion) {
+  using vita::exercise_4_1__3::find_max_subarray_recursively;
   
+  auto empty_set_result =
+      find_max_subarray_recursively(std::begin(empty_set_),
+					  std::end(empty_set_));
+  EXPECT_EQ(std::get<RANGE_FIRST_IDX>(empty_set_result),
+	    std::end(empty_set_));
+  EXPECT_EQ(std::get<RANGE_LAST_IDX>(empty_set_result),
+	    std::end(empty_set_));
+  EXPECT_EQ(std::get<MAX_SUM_IDX>(empty_set_result),
+	    SUM_ABSENCE_SIGN);
+
+  
+  auto one_elem_set_result =
+      find_max_subarray_recursively(std::begin(one_elem_set_),
+					  std::end(one_elem_set_));
+  EXPECT_EQ(std::get<RANGE_FIRST_IDX>(one_elem_set_result),
+	    std::begin(one_elem_set_));
+  EXPECT_EQ(std::get<RANGE_LAST_IDX>(one_elem_set_result),
+	    std::end(one_elem_set_));
+  EXPECT_EQ(std::get<MAX_SUM_IDX>(one_elem_set_result),
+	    *std::begin(one_elem_set_));
+
+  
+  auto book_set_result =
+      find_max_subarray_recursively(std::begin(book_set_),
+					  std::end(book_set_));
+  auto best_range_first = std::get<RANGE_FIRST_IDX>(book_set_result);
+  auto best_range_last = std::get<RANGE_LAST_IDX>(book_set_result);
+  
+  EXPECT_EQ(std::distance(std::begin(book_set_), best_range_first),
+			  BEST_RANGE_FIRST_OFFSET);
+  EXPECT_EQ(std::distance(std::begin(book_set_), best_range_last),
+			  BEST_RANGE_LAST_OFFSET);
+  EXPECT_EQ(std::get<MAX_SUM_IDX>(book_set_result),
+	    BEST_RANGE_RESULT);  
+}
+
 }  // namespace
