@@ -8,6 +8,8 @@ namespace {
 class Exercise_4_1__3Test:
     public ::testing::Test {
  protected:
+  std::vector<int> GenerateBigSet();
+  
   static const size_t RANGE_FIRST_IDX = 0;
   static const size_t RANGE_LAST_IDX = 1;
   static const size_t MAX_SUM_IDX = 2;
@@ -21,8 +23,18 @@ class Exercise_4_1__3Test:
                              -7, 12, -5, -22, 15, -4, 7};
   static const int    BEST_RANGE_RESULT = 43;
   static const size_t BEST_RANGE_FIRST_OFFSET = 7;
-  static const size_t BEST_RANGE_LAST_OFFSET  = 11;  
+  static const size_t BEST_RANGE_LAST_OFFSET  = 11;
+
+  static const size_t PERFORMANCE_TEST_LOOP_SIZE = 290;
 };
+
+std::vector<int> Exercise_4_1__3Test::GenerateBigSet()
+{
+  std::vector<int> result{book_set_};
+  result.resize(PERFORMANCE_TEST_LOOP_SIZE, -1);
+  return result;
+}
+
 
 TEST_F(Exercise_4_1__3Test, BruteForceVersion) {
   using vita::exercise_4_1__3::find_max_subarray_using_brute_force;
@@ -103,4 +115,43 @@ TEST_F(Exercise_4_1__3Test, RecursiveVersion) {
 	    BEST_RANGE_RESULT);  
 }
 
+TEST_F(Exercise_4_1__3Test, BruteForceVersionPerformanceTest) {
+  using vita::exercise_4_1__3::find_max_subarray_using_brute_force;
+
+  auto big_set = GenerateBigSet();
+
+  auto result =
+      find_max_subarray_using_brute_force(std::begin(big_set),
+					  std::end(big_set));
+  auto best_range_first = std::get<RANGE_FIRST_IDX>(result);
+  auto best_range_last = std::get<RANGE_LAST_IDX>(result);
+  
+  EXPECT_EQ(std::distance(std::begin(big_set), best_range_first),
+	    BEST_RANGE_FIRST_OFFSET);
+  EXPECT_EQ(std::distance(std::begin(big_set), best_range_last),
+	    BEST_RANGE_LAST_OFFSET);
+  EXPECT_EQ(std::get<MAX_SUM_IDX>(result),
+	    BEST_RANGE_RESULT);  
+}
+
+TEST_F(Exercise_4_1__3Test, RecursiveVersionPerformanceTest) {
+  using vita::exercise_4_1__3::find_max_subarray_recursively;
+
+  auto big_set = GenerateBigSet();
+
+  auto result =
+      find_max_subarray_recursively(std::begin(big_set),
+				    std::end(big_set));
+  auto best_range_first = std::get<RANGE_FIRST_IDX>(result);
+  auto best_range_last = std::get<RANGE_LAST_IDX>(result);
+  
+  EXPECT_EQ(std::distance(std::begin(big_set), best_range_first),
+	    BEST_RANGE_FIRST_OFFSET);
+  EXPECT_EQ(std::distance(std::begin(big_set), best_range_last),
+	    BEST_RANGE_LAST_OFFSET);
+  EXPECT_EQ(std::get<MAX_SUM_IDX>(result),
+	    BEST_RANGE_RESULT);  
+}
+
 }  // namespace
+
