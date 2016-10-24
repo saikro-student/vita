@@ -152,6 +152,44 @@ auto find_max_subarray_recursively(InputIterator first,
   return right_result;
 }
 
+// Excercise 4.1-3 (brute-force implementation)
+template<typename InputIterator>
+auto find_max_subarray_using_hybrid_algo(InputIterator first,
+                                         InputIterator last)
+{
+  using ValueType = std::iterator_traits<InputIterator>::value_type;
+
+  auto size = std::distance(first, last);
+  if(size < 1)
+  {
+    return std::make_tuple(last, last,
+                           std::numeric_limits<ValueType>::min());
+  }
+
+  // It was selected in the unit test experimentally.
+  constexpr size_t kAlgosBorder = 75;
+  if (kAlgosBorder > size)
+    return find_max_subarray_using_brute_force(first, last);
+
+  auto middle = first;
+  std::advance(middle, size/2);
+
+  auto left_result  = find_max_subarray_recursively(first, middle);
+  auto cross_result = find_max_crossing_subarray(first, last, middle);
+  auto right_result = find_max_subarray_recursively(middle, last);
+
+  constexpr size_t MAX_SUM_IDX = 2;
+  auto left_max  = std::get<MAX_SUM_IDX>(left_result);
+  auto cross_max = std::get<MAX_SUM_IDX>(cross_result);
+  auto right_max = std::get<MAX_SUM_IDX>(right_result);
+
+  if(left_max >= cross_max && left_max >= right_max)
+    return left_result;
+  if(cross_max >= left_max && cross_max >= right_max)
+    return cross_result;
+  return right_result;
+}
+
 }  // namespce impl
 
 }  //  exercise_4_1__3
